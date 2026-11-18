@@ -5,21 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>光回線 お申込み情報入力</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root{
   --bg:#f7f3e8; --card:#fff; --ink:#2b2a28; --sub:#6b6760; --line:#e3ddd0;
   --accent:#d99a12; --accent-ink:#fff; --primary:#3f6fc4; --err:#c8412f; --ok:#2f8a57;
-  --soft:#fbf6e6;
+  --soft:#fbf6e6; --field:#fff; --fieldline:#cfc8b8; --chip:#ece4cf; --th:#f4f1ea; --sel:#eef3fc; --staffbg:#f2efe7; --errbg:#fdecea;
 }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1d1b17; --card:#26231e; --ink:#ece7dc; --sub:#b3ab9c; --line:#3a352d; --accent:#c88a0c; --primary:#6b95e0; --err:#ef7a68; --ok:#5cc489;
+  --soft:#2e2a22; --field:#1f1d19; --fieldline:#4a443a; --chip:#34302a; --th:#2c2924; --sel:#243250; --staffbg:#24211c; --errbg:#3a2220; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#1d1b17; --card:#26231e; --ink:#ece7dc; --sub:#b3ab9c; --line:#3a352d; --accent:#c88a0c; --primary:#6b95e0; --err:#ef7a68; --ok:#5cc489;
+  --soft:#2e2a22; --field:#1f1d19; --fieldline:#4a443a; --chip:#34302a; --th:#2c2924; --sel:#243250; --staffbg:#24211c; --errbg:#3a2220; color-scheme:dark }
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;line-height:1.7;font-size:16px}
-.wrap{max-width:720px;margin:0 auto;padding:16px 16px 80px}
+.wrap{max-width:720px;margin:0 auto;padding-block:16px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header.top{background:var(--accent);color:var(--accent-ink);padding:20px 16px;text-align:center}
 header.top h1{margin:0;font-size:1.35rem;letter-spacing:.04em}
 header.top p{margin:4px 0 0;font-size:.9rem;opacity:.95}
 .steps{display:flex;gap:6px;margin:16px 0}
-.steps span{flex:1;text-align:center;font-size:.8rem;padding:6px 4px;border-radius:999px;background:#ece4cf;color:var(--sub)}
+.steps span{flex:1;text-align:center;font-size:.8rem;padding:6px 4px;border-radius:999px;background:var(--chip);color:var(--sub)}
 .steps span.on{background:var(--primary);color:#fff}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;margin:14px 0}
 .card h2{margin:0 0 12px;font-size:1.1rem;display:flex;align-items:center;gap:8px}
@@ -29,10 +36,10 @@ header.top p{margin:4px 0 0;font-size:.9rem;opacity:.95}
 .f > label, .f > .lbl{display:block;font-weight:600;font-size:.95rem;margin-bottom:4px}
 .req,.opt{display:inline-block;font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:2px}
 .req{background:var(--err);color:#fff}
-.opt{background:#e8e4da;color:var(--sub)}
+.opt{background:var(--chip);color:var(--sub)}
 .hint{font-size:.82rem;color:var(--sub);margin-top:3px}
 input[type=text],input[type=tel],input[type=email],input[type=url],input[type=date],select,textarea{
-  width:100%;font:inherit;padding:10px 12px;border:1px solid #cfc8b8;border-radius:8px;background:#fff;color:var(--ink)}
+  width:100%;font:inherit;padding:10px 12px;border:1px solid var(--fieldline);border-radius:8px;background:var(--field);color:var(--ink)}
 textarea{min-height:90px;resize:vertical}
 input:focus,select:focus,textarea:focus{outline:2px solid var(--primary);outline-offset:1px;border-color:var(--primary)}
 .row{display:flex;gap:10px}
@@ -42,33 +49,33 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--primary);outline
 .zip input{max-width:160px}
 button{font:inherit;cursor:pointer}
 .btn{border:0;border-radius:10px;padding:12px 18px;font-weight:700}
-.btn.sub{background:#ece4cf;color:var(--ink)}
+.btn.sub{background:var(--chip);color:var(--ink)}
 .btn.pri{background:var(--primary);color:#fff}
 .btn.sm{padding:8px 12px;font-size:.85rem;font-weight:600}
 .choices{display:flex;flex-wrap:wrap;gap:8px}
-.choices label{display:flex;align-items:center;gap:6px;border:1px solid #cfc8b8;border-radius:8px;padding:8px 12px;background:#fff;font-weight:400;cursor:pointer}
+.choices label{display:flex;align-items:center;gap:6px;border:1px solid var(--fieldline);border-radius:8px;padding:8px 12px;background:var(--field);font-weight:400;cursor:pointer}
 .choices input{accent-color:var(--primary);width:18px;height:18px;margin:0}
-.choices label:has(input:checked){border-color:var(--primary);background:#eef3fc}
+.choices label:has(input:checked){border-color:var(--primary);background:var(--sel)}
 .sub-box{background:var(--soft);border-left:4px solid var(--accent);padding:4px 12px 8px;border-radius:6px;margin-top:8px}
 .err-msg{color:var(--err);font-size:.82rem;margin-top:4px;display:none}
 .f.invalid .err-msg{display:block}
 .f.invalid input,.f.invalid select,.f.invalid .choices label{border-color:var(--err)}
-.alert{background:#fdecea;color:var(--err);border-radius:8px;padding:10px 12px;font-size:.9rem;display:none}
+.alert{background:var(--errbg);color:var(--err);border-radius:8px;padding:10px 12px;font-size:.9rem;display:none}
 .alert.show{display:block}
 .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .actions .btn{min-width:180px}
-details.staff{background:#f2efe7;border:1px dashed #bdb5a3;border-radius:12px;padding:12px 16px;margin:14px 0}
+details.staff{background:var(--staffbg);border:1px dashed var(--fieldline);border-radius:12px;padding:12px 16px;margin:14px 0}
 details.staff summary{cursor:pointer;font-weight:700;color:var(--sub)}
 .consent{font-size:.88rem}
 .hidden{display:none !important}
 /* confirm */
 table.cf{width:100%;border-collapse:collapse;font-size:.92rem}
 table.cf th,table.cf td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
-table.cf th{background:#f4f1ea;width:38%;font-weight:600}
+table.cf th{background:var(--th);width:38%;font-weight:600}
 table.cf td{white-space:pre-wrap;word-break:break-all}
 table.cf tr.sec th{background:var(--accent);color:#fff;text-align:left}
-table.cf td.empty{color:#aaa}
-.copy{float:right;margin-left:6px;border:1px solid #cfc8b8;background:#fff;border-radius:6px;font-size:.72rem;padding:2px 8px;color:var(--sub)}
+table.cf td.empty{color:var(--sub)}
+.copy{float:right;margin-left:6px;border:1px solid var(--fieldline);background:var(--field);border-radius:6px;font-size:.72rem;padding:2px 8px;color:var(--sub)}
 .copy.done{color:var(--ok);border-color:var(--ok)}
 .done-box{text-align:center;padding:30px 16px}
 .done-box .ic{font-size:2.4rem;color:var(--ok)}
@@ -519,7 +526,7 @@ table.cf td.empty{color:#aaa}
       <h2 style="justify-content:center">ご入力ありがとうございました</h2>
       <p>下のボタンから担当者へ送信してください。<br>（担当者の端末でご入力の場合は、そのまま担当者へお渡しください）</p>
       <div class="actions">
-        <button type="button" class="btn pri" id="lineBtn">LINEで送る</button>
+        <a class="btn pri" id="lineBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;text-align:center">LINEで送る</a>
         <button type="button" class="btn pri" id="mailBtn">メールで送る</button>
         <button type="button" class="btn sub" id="copyAllBtn">内容をコピー</button>
       </div>
@@ -530,7 +537,6 @@ table.cf td.empty{color:#aaa}
       <p class="lead">登録フォームと同じ順番・同じ形式に整形しています。各「コピー」で1項目ずつ貼り付けできます。</p>
       <table class="cf" id="staffTable"></table>
       <div class="actions no-print">
-        <button type="button" class="btn sub" onclick="window.print()">印刷</button>
         <button type="button" class="btn sub" id="newBtn">新しいお客さまを入力</button>
       </div>
     </div>
@@ -858,10 +864,13 @@ table.cf td.empty{color:#aaa}
   $('backBtn').addEventListener('click', () => step(1));
   $('sendBtn').addEventListener('click', () => {
     renderTable($('staffTable'), data.staff, true);
+    $('lineBtn').href = 'https://line.me/R/share?text=' + encodeURIComponent(sendText());
     step(3);
   });
   $('newBtn').addEventListener('click', () => {
-    if (!confirm('入力内容を消去して最初から入力しますか？')) return;
+    const nb=$('newBtn');
+    if (!nb.dataset.arm){ nb.dataset.arm='1'; nb.textContent='もう一度押すと入力内容を消去します'; setTimeout(()=>{delete nb.dataset.arm; nb.textContent='新しいお客さまを入力';},4000); return; }
+    delete nb.dataset.arm; nb.textContent='新しいお客さまを入力';
     const keep = ['pid','pname','staffName','ptel','method','term','disc','wifiType','toMail','cb'].map(id => [id,$(id).value]);
     $('form').reset(); keep.forEach(([id,v]) => $(id).value = v);
     data = null; refresh(); step(1);
@@ -874,7 +883,6 @@ table.cf td.empty{color:#aaa}
 
   const sendText = () => '光回線お申込み情報（' + data.name + ' 様）\n\n' + asText(data.staff);
   $('copyAllBtn').addEventListener('click', () => copy(sendText()).then(()=>toast('コピーしました')));
-  $('lineBtn').addEventListener('click', () => { window.open('https://line.me/R/share?text=' + encodeURIComponent(sendText()), '_blank'); });
   $('mailBtn').addEventListener('click', () => {
     location.href = 'mailto:' + encodeURIComponent(val('toMail')) + '?subject=' + encodeURIComponent('光回線お申込み情報（'+data.name+' 様）') + '&body=' + encodeURIComponent(sendText());
   });
