@@ -1,0 +1,905 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>光回線 お申込み情報入力</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+:root{
+  --bg:#f3f5f8; --card:#fff; --ink:#1f2933; --sub:#5f6b7a; --line:#e1e6ec;
+  --accent:#2563c9; --accent-ink:#fff; --primary:#2563c9; --err:#d0342c; --ok:#1f8a4c;
+  --soft:#f5f8fc; --field:#fff; --fieldline:#c9d1db; --chip:#e8ecf1; --th:#f5f7fa; --sel:#eaf1fc; --staffbg:#f5f7fa; --errbg:#fdecea;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#15181d; --card:#1e2228; --ink:#e6e9ee; --sub:#a0a9b5; --line:#2f353e; --accent:#3b74d6; --primary:#5b8ee6; --err:#ef7a68; --ok:#5cc489;
+  --soft:#222831; --field:#171a1f; --fieldline:#3a414b; --chip:#2a3038; --th:#242930; --sel:#1f3050; --staffbg:#1b1f25; --errbg:#3a2220; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#15181d; --card:#1e2228; --ink:#e6e9ee; --sub:#a0a9b5; --line:#2f353e; --accent:#3b74d6; --primary:#5b8ee6; --err:#ef7a68; --ok:#5cc489;
+  --soft:#222831; --field:#171a1f; --fieldline:#3a414b; --chip:#2a3038; --th:#242930; --sel:#1f3050; --staffbg:#1b1f25; --errbg:#3a2220; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Arial,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;line-height:1.7;font-size:16px}
+.wrap{max-width:720px;margin:0 auto;padding-block:16px 80px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--accent);color:var(--accent-ink);padding:20px 16px;text-align:center}
+header.top h1{margin:0;font-size:1.35rem;letter-spacing:.04em}
+header.top p{margin:4px 0 0;font-size:.9rem;opacity:.95}
+.steps{display:flex;gap:6px;margin:16px 0}
+.steps span{flex:1;text-align:center;font-size:.8rem;padding:6px 4px;border-radius:999px;background:var(--chip);color:var(--sub)}
+.steps span.on{background:var(--primary);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 16px;margin:14px 0}
+.card h2{margin:0 0 12px;font-size:1.1rem;display:flex;align-items:center;gap:8px}
+.card h2 .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.85rem}
+.lead{font-size:.92rem;color:var(--sub);margin:0 0 8px}
+.f{margin:14px 0}
+.f > label, .f > .lbl{display:block;font-weight:600;font-size:.95rem;margin-bottom:4px}
+.req,.opt{display:inline-block;font-size:.7rem;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px;vertical-align:2px}
+.req{background:var(--err);color:#fff}
+.opt{background:var(--chip);color:var(--sub)}
+.hint{font-size:.82rem;color:var(--sub);margin-top:3px}
+input[type=text],input[type=tel],input[type=email],input[type=url],input[type=date],select,textarea{
+  width:100%;font:inherit;padding:10px 12px;border:1px solid var(--fieldline);border-radius:8px;background:var(--field);color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--primary);outline-offset:1px;border-color:var(--primary)}
+.row{display:flex;gap:10px}
+.row > *{flex:1;min-width:0}
+.row .sm{flex:0 0 auto}
+.zip{display:flex;gap:8px;align-items:center}
+.zip input{max-width:160px}
+button{font:inherit;cursor:pointer}
+.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:700}
+.btn.sub{background:var(--chip);color:var(--ink)}
+.btn.pri{background:var(--primary);color:#fff}
+.btn.sm{padding:8px 12px;font-size:.85rem;font-weight:600}
+.choices{display:flex;flex-wrap:wrap;gap:8px}
+.choices label{display:flex;align-items:center;gap:6px;border:1px solid var(--fieldline);border-radius:8px;padding:8px 12px;background:var(--field);font-weight:400;cursor:pointer}
+.choices input{accent-color:var(--primary);width:18px;height:18px;margin:0}
+.choices label:has(input:checked){border-color:var(--primary);background:var(--sel)}
+.sub-box{background:var(--soft);border-left:4px solid var(--accent);padding:4px 12px 8px;border-radius:6px;margin-top:8px}
+.err-msg{color:var(--err);font-size:.82rem;margin-top:4px;display:none}
+.f.invalid .err-msg{display:block}
+.f.invalid input,.f.invalid select,.f.invalid .choices label{border-color:var(--err)}
+.alert{background:var(--errbg);color:var(--err);border-radius:8px;padding:10px 12px;font-size:.9rem;display:none}
+.alert.show{display:block}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.actions .btn{min-width:180px}
+details.staff{background:var(--staffbg);border:1px dashed var(--fieldline);border-radius:12px;padding:12px 16px;margin:14px 0}
+details.staff summary{cursor:pointer;font-weight:700;color:var(--sub)}
+.consent{font-size:.88rem}
+.hidden{display:none !important}
+/* confirm */
+table.cf{width:100%;border-collapse:collapse;font-size:.92rem}
+table.cf th,table.cf td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+table.cf th{background:var(--th);width:38%;font-weight:600}
+table.cf td{white-space:pre-wrap;word-break:break-all}
+table.cf tr.sec th{background:var(--accent);color:#fff;text-align:left}
+table.cf td.empty{color:var(--sub)}
+.copy{float:right;margin-left:6px;border:1px solid var(--fieldline);background:var(--field);border-radius:6px;font-size:.72rem;padding:2px 8px;color:var(--sub)}
+.copy.done{color:var(--ok);border-color:var(--ok)}
+.done-box{text-align:center;padding:30px 16px}
+.done-box .ic{font-size:2.4rem;color:var(--ok)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2b2a28;color:#fff;padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+@media (max-width:480px){
+  .row.wrap-sm{flex-direction:column;gap:0}
+  table.cf th{width:42%}
+}
+@media print{
+  header.top,.steps,.actions,.copy,.no-print{display:none !important}
+  body{background:#fff}
+  .card{border:0;padding:0}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>光回線 お申込み情報入力フォーム</h1>
+  <p>@nifty光 のお申込みに必要な情報をご入力ください（所要時間 約5分）</p>
+</header>
+
+<div class="wrap">
+  <div class="steps" aria-hidden="true">
+    <span id="st1" class="on">1. 入力</span><span id="st2">2. 確認</span><span id="st3">3. 完了</span>
+  </div>
+
+  <!-- ============ 入力画面 ============ -->
+  <form id="form" novalidate>
+    <div class="alert" id="alert">入力内容に不備があります。赤く表示されている項目をご確認ください。</div>
+
+    <!-- 1 お申込者 -->
+    <section class="card">
+      <h2><span class="n">1</span>お申込者さま</h2>
+      <div class="f" data-f="appSei">
+        <span class="lbl">お名前（漢字）<span class="req">必須</span></span>
+        <div class="row">
+          <input type="text" id="appSei" placeholder="姓（例：山田）" autocomplete="family-name">
+          <input type="text" id="appMei" placeholder="名（例：太郎）" autocomplete="given-name">
+        </div>
+        <div class="hint">機種依存文字（髙・﨑 など）は通常の文字でご入力ください</div>
+        <div class="err-msg">姓・名を入力してください（空白は入れないでください）</div>
+      </div>
+      <div class="f" data-f="appSeiK">
+        <span class="lbl">お名前（フリガナ）<span class="req">必須</span></span>
+        <div class="row">
+          <input type="text" id="appSeiK" placeholder="セイ（例：ヤマダ）">
+          <input type="text" id="appMeiK" placeholder="メイ（例：タロウ）">
+        </div>
+        <div class="hint">ひらがなで入力しても自動でカタカナに変換します</div>
+        <div class="err-msg">カタカナで入力してください</div>
+      </div>
+      <div class="f" data-f="rel">
+        <span class="lbl">ご契約者さまとの関係<span class="req">必須</span></span>
+        <div class="choices">
+          <label><input type="radio" name="rel" value="本人" checked>ご本人（お申込者＝ご契約者）</label>
+          <label><input type="radio" name="rel" value="家族">ご家族</label>
+          <label><input type="radio" name="rel" value="その他">その他</label>
+        </div>
+        <div class="sub-box hidden" id="relBox">
+          <div class="f">
+            <label for="relDetail">続柄・関係の詳細<span class="req">必須</span></label>
+            <input type="text" id="relDetail" placeholder="例：妻、子、会社の総務担当 など">
+            <div class="err-msg">関係の詳細を入力してください</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 ご契約者 -->
+    <section class="card">
+      <h2><span class="n">2</span>ご契約者さま</h2>
+      <div class="f" data-f="kubun">
+        <span class="lbl">ご契約の区分<span class="req">必須</span></span>
+        <div class="choices">
+          <label><input type="radio" name="kubun" value="個人" checked>個人</label>
+          <label><input type="radio" name="kubun" value="法人">法人</label>
+        </div>
+        <div class="err-msg">選択してください</div>
+      </div>
+      <div id="conNameBox" class="hidden">
+        <div class="f" data-f="conSei">
+          <span class="lbl"><span id="conNameLbl">ご契約者名</span>（漢字）<span class="req">必須</span></span>
+          <div class="row">
+            <input type="text" id="conSei" placeholder="姓">
+            <input type="text" id="conMei" placeholder="名">
+          </div>
+          <div class="hint" id="conNameHint">機種依存文字は通常の文字でご入力ください</div>
+          <div class="err-msg">入力してください（空白は入れないでください）</div>
+        </div>
+        <div class="f" data-f="conSeiK">
+          <span class="lbl"><span id="conNameLblK">ご契約者名</span>（フリガナ）<span class="req">必須</span></span>
+          <div class="row">
+            <input type="text" id="conSeiK" placeholder="セイ">
+            <input type="text" id="conMeiK" placeholder="メイ">
+          </div>
+          <div class="err-msg">カタカナで入力してください</div>
+        </div>
+      </div>
+      <p class="lead" id="conSameNote">ご契約者さまのお名前は、お申込者さまと同じ内容で登録します。</p>
+      <div class="row wrap-sm">
+        <div class="f" data-f="gender">
+          <span class="lbl">性別<span class="req">必須</span></span>
+          <div class="choices">
+            <label><input type="radio" name="gender" value="男性">男性</label>
+            <label><input type="radio" name="gender" value="女性">女性</label>
+          </div>
+          <div class="err-msg">選択してください</div>
+        </div>
+        <div class="f" data-f="birth">
+          <label for="birth">生年月日<span class="req">必須</span></label>
+          <input type="date" id="birth" min="1900-01-01" autocomplete="bday">
+          <div class="hint" id="birthHint">法人の場合は代表者さまの生年月日</div>
+          <div class="err-msg">生年月日を入力してください</div>
+        </div>
+      </div>
+      <div class="sub-box hidden" id="corpBox">
+        <div class="f" data-f="corpMail">
+          <label for="corpMail">会社のメールアドレス<span class="req">必須</span></label>
+          <input type="email" id="corpMail" placeholder="info@example.co.jp" autocomplete="email">
+          <div class="err-msg">メールアドレスを正しく入力してください</div>
+        </div>
+        <div class="f">
+          <label for="corpUrl">会社のホームページURL<span class="opt">任意</span></label>
+          <input type="url" id="corpUrl" placeholder="https://">
+        </div>
+        <div class="hint">※法人契約の場合、お支払い方法にクレジットカードはご利用いただけません</div>
+      </div>
+    </section>
+
+    <!-- 3 ご連絡先 -->
+    <section class="card">
+      <h2><span class="n">3</span>ご連絡先</h2>
+      <p class="lead">確認のお電話をさせていただく番号をご入力ください。</p>
+      <div class="f" data-f="tel1">
+        <label for="tel1">日中つながる電話番号<span class="req">必須</span></label>
+        <div class="row">
+          <input type="tel" id="tel1" placeholder="090-1234-5678" autocomplete="tel" inputmode="tel">
+          <select id="tel1k" class="sm" aria-label="電話番号の種類">
+            <option value="契約者携帯">携帯</option><option value="自宅">自宅</option><option value="会社">会社</option>
+          </select>
+        </div>
+        <div class="hint">ハイフン（-）付きで入力してください（携帯番号は自動で付きます）</div>
+        <div class="err-msg">「090-1234-5678」の形式で入力してください</div>
+      </div>
+      <div class="f" data-f="tel2">
+        <label for="tel2">その他の電話番号<span class="opt">任意</span></label>
+        <div class="row">
+          <input type="tel" id="tel2" placeholder="03-1234-5678" inputmode="tel">
+          <select id="tel2k" class="sm" aria-label="電話番号の種類">
+            <option value="自宅">自宅</option><option value="会社">会社</option><option value="契約者携帯">携帯</option>
+          </select>
+        </div>
+        <div class="err-msg">「03-1234-5678」の形式で入力してください</div>
+      </div>
+      <div class="row wrap-sm">
+        <div class="f">
+          <label for="callDate">確認のお電話 希望日<span class="opt">任意</span></label>
+          <input type="date" id="callDate">
+          <div class="hint">空欄の場合は最短でご連絡します</div>
+        </div>
+        <div class="f">
+          <label for="callTime">希望時間帯<span class="opt">任意</span></label>
+          <select id="callTime">
+            <option value="最短">指定なし（最短）</option>
+            <option value="AM">午前（9〜12時）</option>
+            <option value="PM">午後（12〜18時）</option>
+            <option value="指定時間あり">時間を指定する</option>
+          </select>
+          <input type="text" id="callTimeDetail" class="hidden" placeholder="例：19時以降" style="margin-top:6px">
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 設置場所 -->
+    <section class="card">
+      <h2><span class="n">4</span>光回線の設置場所</h2>
+      <div class="f" data-f="zip">
+        <label for="zip">郵便番号<span class="req">必須</span></label>
+        <div class="zip">
+          <input type="text" id="zip" placeholder="123-4567" inputmode="numeric" autocomplete="postal-code">
+          <button type="button" class="btn sub sm" id="zipBtn">住所を自動入力</button>
+        </div>
+        <div class="err-msg">7桁の郵便番号を入力してください</div>
+      </div>
+      <div class="f" data-f="addr1">
+        <label for="addr1">住所（番地・号まで）<span class="req">必須</span></label>
+        <input type="text" id="addr1" placeholder="例：兵庫県西宮市○○町1丁目2番3号" autocomplete="street-address">
+        <div class="hint">都道府県・市区町村・町名・丁目・番地・号まで。空白は入れないでください</div>
+        <div class="err-msg">住所を入力してください（空白は入れないでください）</div>
+      </div>
+      <div class="f" data-f="addr2">
+        <label for="addr2">建物名・部屋番号<span class="opt">任意</span></label>
+        <input type="text" id="addr2" placeholder="例：○○マンション101号室">
+        <div class="err-msg">空白は入れないでください</div>
+      </div>
+      <div class="f" data-f="house">
+        <span class="lbl">お住まいの種類<span class="req">必須</span></span>
+        <div class="choices">
+          <label><input type="radio" name="house" value="戸建（持家）">戸建（持家）</label>
+          <label><input type="radio" name="house" value="戸建（賃貸）">戸建（賃貸）</label>
+          <label><input type="radio" name="house" value="集合（分譲）">マンション等（分譲）</label>
+          <label><input type="radio" name="house" value="集合（賃貸）">マンション・アパート（賃貸）</label>
+        </div>
+        <div class="err-msg">選択してください</div>
+      </div>
+      <div class="f" data-f="moveIn">
+        <span class="lbl">ご入居状況<span class="req">必須</span></span>
+        <div class="choices">
+          <label><input type="radio" name="moved" value="済" checked>すでに住んでいる</label>
+          <label><input type="radio" name="moved" value="予定">これから入居する</label>
+        </div>
+        <div class="sub-box hidden" id="moveInBox">
+          <div class="f">
+            <label for="moveIn">入居予定日<span class="req">必須</span></label>
+            <input type="date" id="moveIn">
+            <div class="err-msg">入居予定日を入力してください</div>
+          </div>
+        </div>
+      </div>
+      <div class="f" data-f="siteTel">
+        <label for="siteTel">設置場所の固定電話番号<span class="opt">任意</span></label>
+        <input type="tel" id="siteTel" placeholder="03-1234-5678" inputmode="tel">
+        <div class="hint">設置場所で固定電話をお使いの場合のみ</div>
+        <div class="err-msg">「03-1234-5678」の形式で入力してください</div>
+      </div>
+      <div class="f">
+        <label for="mailTo">郵送物の送付先（設置場所と異なる場合のみ）<span class="opt">任意</span></label>
+        <input type="text" id="mailTo" placeholder="例：〒123-4567 東京都○○区… 宛名">
+        <div class="hint">郵便番号からご記入ください</div>
+      </div>
+    </section>
+
+    <!-- 5 現在の回線 -->
+    <section class="card">
+      <h2><span class="n">5</span>現在のインターネット回線</h2>
+      <div class="f" data-f="cur">
+        <span class="lbl">今お使いの光回線について<span class="req">必須</span></span>
+        <div class="choices" style="flex-direction:column">
+          <label><input type="radio" name="cur" value="光コラボ 新規">光回線を使っていない（新しく引く）</label>
+          <label><input type="radio" name="cur" value="光コラボ 他社転用">NTTの「フレッツ光」を使っている</label>
+          <label><input type="radio" name="cur" value="光コラボ 事業者変更">他社の光回線（ドコモ光・ソフトバンク光など、NTT回線を使うもの）を使っている</label>
+          <label><input type="radio" name="cur" value="自社">すでに @nifty を使っている</label>
+          <label><input type="radio" name="cur" value="不明">わからない</label>
+        </div>
+        <div class="err-msg">選択してください</div>
+      </div>
+      <div class="sub-box hidden" id="tenyoBox">
+        <div class="f" data-f="tenyo">
+          <label for="tenyo"><span id="tenyoLbl">転用承諾番号</span><span class="opt">任意</span></label>
+          <input type="text" id="tenyo" placeholder="例：A1234567890" maxlength="13">
+          <div class="hint" id="tenyoHint">お持ちの場合のみ（ハイフン不要・11桁）。わからなければ空欄で大丈夫です</div>
+          <div class="err-msg">英数字11桁で入力してください</div>
+        </div>
+        <div class="f">
+          <label for="curName">現在の回線のご契約名義（ご契約者と異なる場合のみ）<span class="opt">任意</span></label>
+          <input type="text" id="curName" placeholder="例：山田 花子（ヤマダ ハナコ）／妻">
+          <div class="hint">漢字・フリガナ・ご契約者さまとの関係をご記入ください</div>
+        </div>
+        <div class="f" id="cafBox">
+          <label for="caf">CAF番号（西日本エリアで分かる場合）<span class="opt">任意</span></label>
+          <input type="text" id="caf" placeholder="CAF から始まる番号">
+        </div>
+      </div>
+      <div class="sub-box hidden" id="niftyBox">
+        <div class="f" data-f="niftyId">
+          <label for="niftyId">@nifty ID<span class="opt">任意</span></label>
+          <input type="text" id="niftyId" placeholder="例：abc12345" maxlength="8">
+          <div class="hint">英字3桁＋数字5桁</div>
+          <div class="err-msg">英字3桁＋数字5桁で入力してください</div>
+        </div>
+        <div class="f">
+          <span class="lbl">現在お使いのサービス</span>
+          <div class="choices">
+            <label><input type="radio" name="niftyCur" value="光コラボ 自社転用" checked>@nifty 光 以外（@niftyのフレッツ接続など）</label>
+            <label><input type="radio" name="niftyCur" value="光コラボ 自社新規">回線を新しく引く</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 ご希望内容 -->
+    <section class="card">
+      <h2><span class="n">6</span>ご希望のサービス</h2>
+      <div class="f" data-f="speed">
+        <span class="lbl">通信速度<span class="req">必須</span></span>
+        <div class="choices">
+          <label><input type="radio" name="speed" value="1G" checked>最大1ギガ（標準）</label>
+          <label><input type="radio" name="speed" value="10G">最大10ギガ（提供エリアのみ）</label>
+        </div>
+      </div>
+      <div class="f">
+        <span class="lbl">Wi-Fi（無線LAN）機器のレンタル</span>
+        <div class="choices">
+          <label><input type="radio" name="wifi" value="希望する">希望する</label>
+          <label><input type="radio" name="wifi" value="希望しない" checked>希望しない（自分で用意する）</label>
+        </div>
+      </div>
+
+      <div class="f">
+        <span class="lbl">ひかり電話（固定電話）</span>
+        <div class="choices">
+          <label><input type="radio" name="hikariTel" value="なし" checked>利用しない</label>
+          <label><input type="radio" name="hikariTel" value="ひかり電話 基本プラン">利用する（基本プラン）</label>
+        </div>
+        <div class="sub-box hidden" id="telBox">
+          <div class="f">
+            <span class="lbl">今お使いの電話番号をそのまま使いますか？</span>
+            <div class="choices">
+              <label><input type="radio" name="mnp" value="有">今の番号を引き継ぐ</label>
+              <label><input type="radio" name="mnp" value="現在ご利用中">現在ひかり電話を利用中（そのまま継続）</label>
+              <label><input type="radio" name="mnp" value="無" checked>新しい番号でよい</label>
+            </div>
+          </div>
+          <div class="f hidden" id="hikariNumBox" data-f="hikariNum">
+            <label for="hikariNum">現在のひかり電話番号</label>
+            <input type="tel" id="hikariNum" placeholder="03-1234-5678" inputmode="tel">
+            <div class="err-msg">「03-1234-5678」の形式で入力してください</div>
+          </div>
+          <div class="f">
+            <span class="lbl">電話のオプション<span class="opt">任意・複数可</span></span>
+            <div class="choices">
+              <label><input type="checkbox" name="telOpt" value="ナンバーディスプレイ">ナンバーディスプレイ</label>
+              <label><input type="checkbox" name="telOpt" value="キャッチホン">キャッチホン</label>
+              <label><input type="checkbox" name="telOpt" value="ボイスワープ">ボイスワープ</label>
+              <label><input type="checkbox" name="telOpt" value="ナンバーリクエスト">ナンバーリクエスト</label>
+              <label><input type="checkbox" name="telOpt" value="迷惑電話おことわり">迷惑電話おことわり</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="f">
+        <span class="lbl">フレッツ・テレビ（光回線でテレビを見る）</span>
+        <div class="choices">
+          <label><input type="radio" name="tv" value="なし" checked>利用しない</label>
+          <label><input type="radio" name="tv" value="あり">利用する</label>
+        </div>
+        <div class="sub-box hidden" id="tvBox">
+          <div class="f" data-f="tvNum">
+            <label for="tvNum">テレビの台数</label>
+            <select id="tvNum">
+              <option value="1">1台</option><option value="2">2台</option><option value="3">3台</option><option value="4">4台</option><option value="5">5台以上</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="f">
+        <span class="lbl">au・UQ mobile のスマホをお使いですか？（セット割）</span>
+        <div class="choices">
+          <label><input type="radio" name="sv" value="無" checked>使っていない</label>
+          <label><input type="radio" name="sv" value="有">使っている</label>
+        </div>
+        <div class="sub-box hidden" id="svBox">
+          <p class="hint">割引を適用するスマホの番号と名義（最大4回線）</p>
+          <div id="svList"></div>
+        </div>
+      </div>
+
+      <div class="f" data-f="pay">
+        <span class="lbl">お支払い方法<span class="req">必須</span></span>
+        <div class="choices">
+          <label id="payCardLbl"><input type="radio" name="pay" value="クレカ">クレジットカード</label>
+          <label><input type="radio" name="pay" value="口座">口座振替（月額＋200円）</label>
+        </div>
+        <div class="hint">お支払い情報は後日、別途お手続きいただきます。カード番号などはここに入力しないでください。</div>
+        <div class="err-msg">選択してください</div>
+      </div>
+
+      <div class="f">
+        <label for="memo">ご質問・ご要望など<span class="opt">任意</span></label>
+        <textarea id="memo" placeholder="工事の希望時期、連絡のつきやすい時間帯など"></textarea>
+      </div>
+    </section>
+
+    <!-- 担当者記入欄 -->
+    <details class="staff" id="staff">
+      <summary>担当者記入欄（お客さまは入力不要です）</summary>
+      <p class="hint">URLに ?pid=1234&amp;pname=会社名&amp;staff=担当名&amp;ptel=電話 を付けると自動で入ります。</p>
+      <div class="row wrap-sm">
+        <div class="f"><label for="pid">パートナーID（4桁）</label><input type="text" id="pid" inputmode="numeric"></div>
+        <div class="f"><label for="pname">パートナー様 名称</label><input type="text" id="pname"></div>
+      </div>
+      <div class="row wrap-sm">
+        <div class="f"><label for="staffName">担当氏名</label><input type="text" id="staffName"></div>
+        <div class="f"><label for="ptel">パートナー様 連絡先</label><input type="text" id="ptel"></div>
+      </div>
+      <div class="f"><label for="method">販売取次手法</label>
+        <select id="method">
+          <option value="">---選択してください---</option>
+          <option>訪問販売（対面販売）</option><option>自社顧客（対面販売）</option><option>自社顧客（非対面販売）</option>
+          <option>不動産アライアンス（対面販売）</option><option>不動産アライアンス（非対面販売）</option><option>店舗販売（対面販売）</option>
+          <option>ポスティング（対面販売）</option><option>ポスティング（非対面販売）</option><option>トスアップ（非対面販売）</option>
+          <option>アウトテレマ</option><option>催事</option><option>催事（トスアップ）</option><option>トスアップ（対面）</option><option>自社顧客（トスアップ）</option>
+        </select>
+        <div class="hint">※対面販売の際は重要事項説明書類をお客様へお渡しください</div>
+      </div>
+      <div class="row wrap-sm">
+        <div class="f"><label for="term">更新期間</label>
+          <select id="term"><option value="2">2年更新</option><option value="3">3年更新</option></select></div>
+        <div class="f"><label for="disc">月額割引</label>
+          <select id="disc"><option value="なし">なし</option><option value="あり">あり</option></select></div>
+      </div>
+      <div class="f"><label for="wifiType">無線LANレンタル（希望時）</label>
+        <select id="wifiType">
+          <option value="auto">自動（10ギガ時は10ギガ対応ルータ）</option>
+          <option value="無線LANカードレンタル330円*東日本">無線LANカードレンタル330円*東日本</option>
+          <option value="無線LANカードレンタル110円*西日本">無線LANカードレンタル110円*西日本</option>
+          <option value="10ギガ対応無線LANルータレンタル">10ギガ対応無線LANルータレンタル</option>
+        </select></div>
+      <div class="f"><span class="lbl">@nifty オプション</span>
+        <div class="choices">
+          <label><input type="checkbox" name="nOpt" value="@nifty 優待サービス">優待サービス</label>
+          <label><input type="checkbox" name="nOpt" value="@nifty まかせて365">まかせて365</label>
+          <label><input type="checkbox" name="nOpt" value="@nifty 常時安全セキュリティ24">常時安全セキュリティ24</label>
+        </div></div>
+      <div class="f"><label for="cb">キャッシュバック・独自キャンペーン（記事欄へ記載）</label><input type="text" id="cb" placeholder="特典なし"></div>
+      <div class="f"><label for="toMail">送信先メールアドレス（メール送信ボタン用）</label><input type="email" id="toMail" placeholder="URLに &amp;to=… でも指定可"></div>
+    </details>
+
+    <section class="card">
+      <div class="f" data-f="agree">
+        <label class="consent"><input type="checkbox" id="agree"> ご入力いただいた個人情報は、光回線のお申込み手続きおよびご連絡の目的でのみ利用し、お申込み先の事業者へ提供することに同意します。<span class="req">必須</span></label>
+        <div class="err-msg">同意にチェックしてください</div>
+      </div>
+      <div class="actions"><button type="submit" class="btn pri">入力内容を確認する</button></div>
+    </section>
+  </form>
+
+  <!-- ============ 確認画面 ============ -->
+  <section id="confirm" class="hidden">
+    <div class="card">
+      <h2>入力内容のご確認</h2>
+      <p class="lead">内容をご確認のうえ「この内容で送信する」を押してください。</p>
+      <table class="cf" id="custTable"></table>
+      <div class="actions">
+        <button type="button" class="btn sub" id="backBtn">修正する</button>
+        <button type="button" class="btn pri" id="sendBtn">この内容で送信する</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 完了画面 ============ -->
+  <section id="done" class="hidden">
+    <div class="card done-box">
+      <div class="ic">✓</div>
+      <h2 style="justify-content:center">ご入力ありがとうございました</h2>
+      <p>下のボタンから担当者へ送信してください。<br>（担当者の端末でご入力の場合は、そのまま担当者へお渡しください）</p>
+      <div class="actions">
+        <a class="btn pri" id="lineBtn" href="#" target="_blank" rel="noopener" style="text-decoration:none;display:inline-block;text-align:center">LINEで送る</a>
+        <button type="button" class="btn pri" id="mailBtn">メールで送る</button>
+        <button type="button" class="btn sub" id="copyAllBtn">内容をコピー</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>担当者用：登録フォーム転記シート</h2>
+      <p class="lead">登録フォームと同じ順番・同じ形式に整形しています。各「コピー」で1項目ずつ貼り付けできます。</p>
+      <table class="cf" id="staffTable"></table>
+      <div class="actions no-print">
+        <button type="button" class="btn sub" id="newBtn">新しいお客さまを入力</button>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const val = id => ($(id).value || '').trim();
+  const radio = n => (document.querySelector('input[name="'+n+'"]:checked')||{}).value || '';
+  const checks = n => [...document.querySelectorAll('input[name="'+n+'"]:checked')].map(x=>x.value);
+  const show = (el, on) => el.classList.toggle('hidden', !on);
+
+  /* ---------- 文字変換 ---------- */
+  const toFullKana = s => {
+    // ひらがな→カタカナ、半角カナ→全角カナ
+    s = s.normalize('NFKC');
+    return s.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0)+0x60));
+  };
+  const halfToFull = s => s.replace(/[!-~]/g, c => String.fromCharCode(c.charCodeAt(0)+0xFEE0)).replace(/ /g,'　');
+  const toHalf = s => s.replace(/[！-～]/g, c => String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[ー－―‐−]/g,'-');
+  const noSpace = s => s.replace(/[\s　]/g,'');
+  const ymd = d => d ? d.replace(/-/g,'') : '';
+  const today = () => { const d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); };
+
+  function fmtTel(raw){
+    let s = toHalf(raw).replace(/[^\d+-]/g,'');
+    if (s.includes('-')) return s;
+    if (/^0[5789]0\d{8}$/.test(s)) return s.replace(/^(\d{3})(\d{4})(\d{4})$/,'$1-$2-$3');
+    if (/^0120\d{6}$/.test(s)) return s.replace(/^(\d{4})(\d{3})(\d{3})$/,'$1-$2-$3');
+    if (/^0[36]\d{8}$/.test(s)) return s.replace(/^(\d{2})(\d{4})(\d{4})$/,'$1-$2-$3');
+    return s;
+  }
+  const telOk = s => /^\+?\d{1,}-\d{1,}-\d{1,}$/.test(s) && s.replace(/\D/g,'').length >= 10 && s.replace(/\D/g,'').length <= 11;
+
+  /* ---------- 自動整形 ---------- */
+  ['appSeiK','appMeiK','conSeiK','conMeiK'].forEach(id => $(id).addEventListener('blur', e => { e.target.value = noSpace(toFullKana(e.target.value)); }));
+  ['appSei','appMei','conSei','conMei'].forEach(id => $(id).addEventListener('blur', e => { e.target.value = noSpace(e.target.value); }));
+  ['tel1','tel2','siteTel','hikariNum'].forEach(id => $(id).addEventListener('blur', e => { e.target.value = fmtTel(e.target.value); }));
+  $('zip').addEventListener('blur', e => {
+    const d = toHalf(e.target.value).replace(/\D/g,'');
+    if (d.length===7) e.target.value = d.slice(0,3)+'-'+d.slice(3);
+  });
+  ['addr1','addr2'].forEach(id => $(id).addEventListener('blur', e => { e.target.value = noSpace(e.target.value); }));
+  $('tenyo').addEventListener('blur', e => { e.target.value = toHalf(e.target.value).replace(/[^0-9A-Za-z]/g,'').toUpperCase(); });
+
+  /* ---------- 郵便番号→住所 ---------- */
+  $('zipBtn').addEventListener('click', () => {
+    const d = toHalf(val('zip')).replace(/\D/g,'');
+    if (d.length!==7){ toast('7桁の郵便番号を入力してください'); return; }
+    $('zip').value = d.slice(0,3)+'-'+d.slice(3);
+    const cb = 'zc'+Date.now();
+    const sc = document.createElement('script');
+    const timer = setTimeout(()=>{ cleanup(); toast('住所を取得できませんでした。手入力してください'); }, 6000);
+    function cleanup(){ clearTimeout(timer); delete window[cb]; sc.remove(); }
+    window[cb] = res => {
+      cleanup();
+      const r = res && res.results && res.results[0];
+      if (!r){ toast('該当する住所が見つかりませんでした'); return; }
+      $('addr1').value = r.address1 + r.address2 + r.address3;
+      $('addr1').focus();
+      const len = $('addr1').value.length; $('addr1').setSelectionRange(len,len);
+      updateArea(r.address1);
+    };
+    sc.src = 'https://zipcloud.ibsnet.co.jp/api/search?zipcode='+d+'&callback='+cb;
+    sc.onerror = () => { cleanup(); toast('住所を取得できませんでした。手入力してください'); };
+    document.body.appendChild(sc);
+  });
+
+  /* ---------- 東西エリア判定（NTT東日本/西日本） ---------- */
+  const EAST = ['北海道','青森','岩手','宮城','秋田','山形','福島','茨城','栃木','群馬','埼玉','千葉','東京','神奈川','新潟','山梨','長野'];
+  function areaOf(addr){
+    if (!addr) return '';
+    return EAST.some(p => addr.startsWith(p)) ? '東' : (/^(..[都道府県]|...県)/.test(addr) ? '西' : '');
+  }
+  function updateArea(){ show($('cafBox'), areaOf(val('addr1')) !== '東'); }
+  $('addr1').addEventListener('input', updateArea);
+
+  /* ---------- 条件表示 ---------- */
+  function refresh(){
+    const rel = radio('rel'), corp = radio('kubun')==='法人';
+    show($('relBox'), rel!=='本人');
+    const needConName = rel!=='本人' || corp;
+    show($('conNameBox'), needConName);
+    show($('conSameNote'), !needConName);
+    $('conNameLbl').textContent = $('conNameLblK').textContent = corp ? '法人名 または 代表者名' : 'ご契約者名';
+    $('conNameHint').textContent = corp ? '登録フォームの仕様上、姓・名に分けて入力してください（例：株式会社 / ○○）' : '機種依存文字は通常の文字でご入力ください';
+    show($('corpBox'), corp);
+    const cardInput = document.querySelector('input[name=pay][value=クレカ]');
+    cardInput.disabled = corp; if (corp && cardInput.checked) cardInput.checked = false;
+    $('payCardLbl').style.opacity = corp ? .45 : 1;
+    show($('moveInBox'), radio('moved')==='予定');
+    const cur = radio('cur');
+    show($('tenyoBox'), cur==='光コラボ 他社転用' || cur==='光コラボ 事業者変更');
+    $('tenyoLbl').textContent = cur==='光コラボ 事業者変更' ? '事業者変更承諾番号' : '転用承諾番号';
+    $('tenyoHint').textContent = cur==='光コラボ 事業者変更' ? '今の回線会社から取得した番号（ハイフン不要）。わからなければ空欄で大丈夫です' : 'NTTから取得した番号（ハイフン不要・11桁）。わからなければ空欄で大丈夫です';
+    show($('niftyBox'), cur==='自社');
+    const ht = radio('hikariTel')!=='なし';
+    show($('telBox'), ht);
+    show($('hikariNumBox'), ht && (radio('mnp')==='現在ご利用中' || ((cur==='光コラボ 他社転用'||cur==='光コラボ 事業者変更') && radio('mnp')==='有')));
+    show($('tvBox'), radio('tv')==='あり');
+    show($('svBox'), radio('sv')==='有');
+    show($('callTimeDetail'), val('callTime')==='指定時間あり');
+    updateArea();
+  }
+  document.addEventListener('change', refresh);
+
+  // スマートバリュー 4行
+  $('svList').innerHTML = [1,2,3,4].map(i =>
+    `<div class="row" style="margin-top:6px"><input type="tel" id="svTel${i}" placeholder="${i}. 携帯番号" inputmode="tel"><input type="text" id="svName${i}" placeholder="名義（例：山田太郎）"></div>`).join('');
+  [1,2,3,4].forEach(i => $('svTel'+i).addEventListener('blur', e => { e.target.value = fmtTel(e.target.value); }));
+
+  /* ---------- URLパラメータ（担当者情報の事前設定） ---------- */
+  const qp = new URLSearchParams(location.search);
+  [['pid','pid'],['pname','pname'],['staff','staffName'],['ptel','ptel'],['to','toMail'],['cb','cb']].forEach(([k,id]) => { if (qp.get(k)) $(id).value = qp.get(k); });
+  if (qp.get('method')) $('method').value = qp.get('method');
+  if (qp.get('term')) $('term').value = qp.get('term');
+  if (qp.get('disc')) $('disc').value = qp.get('disc');
+
+  /* ---------- 検証 ---------- */
+  const KANA = /^[゠-ヿ]+$/;
+  function setErr(key, bad){ const f=document.querySelector('[data-f="'+key+'"]'); if (f) f.classList.toggle('invalid', !!bad); return !bad; }
+  function validate(){
+    document.querySelectorAll('.f.invalid').forEach(f=>f.classList.remove('invalid'));
+    // blur 整形を確実に反映
+    document.querySelectorAll('#form input').forEach(i => i.dispatchEvent(new Event('blur')));
+    let ok = true;
+    const t = (k,b) => { if(!setErr(k,b)) ok=false; };
+    t('appSei', !val('appSei') || !val('appMei'));
+    t('appSeiK', !KANA.test(val('appSeiK')) || !KANA.test(val('appMeiK')));
+    if (radio('rel')!=='本人'){ const bad = !val('relDetail'); $('relDetail').closest('.f').classList.toggle('invalid', bad); if (bad) ok=false; }
+    if (!$('conNameBox').classList.contains('hidden')){
+      t('conSei', !val('conSei') || !val('conMei'));
+      t('conSeiK', !KANA.test(val('conSeiK')) || !KANA.test(val('conMeiK')));
+    }
+    t('gender', !radio('gender'));
+    t('birth', !/^\d{4}-\d{2}-\d{2}$/.test(val('birth')));
+    if (radio('kubun')==='法人') t('corpMail', !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val('corpMail')));
+    t('tel1', !telOk(val('tel1')));
+    t('tel2', val('tel2') && !telOk(val('tel2')));
+    t('zip', !/^\d{3}-\d{4}$/.test(val('zip')));
+    t('addr1', !val('addr1'));
+    t('house', !radio('house'));
+    if (radio('moved')==='予定'){ const bad=!val('moveIn'); $('moveIn').closest('.f').classList.toggle('invalid',bad); if(bad) ok=false; }
+    t('siteTel', val('siteTel') && !telOk(val('siteTel')));
+    t('cur', !radio('cur'));
+    if (!$('tenyoBox').classList.contains('hidden') && radio('cur')==='光コラボ 他社転用') t('tenyo', val('tenyo') && !/^[0-9A-Z]{11}$/.test(val('tenyo')));
+    if (radio('cur')==='自社') t('niftyId', val('niftyId') && !/^[A-Za-z]{3}\d{5}$/.test(toHalf(val('niftyId'))));
+    if (!$('hikariNumBox').classList.contains('hidden')) t('hikariNum', val('hikariNum') && !telOk(val('hikariNum')));
+    t('pay', !radio('pay'));
+    t('agree', !$('agree').checked);
+    $('alert').classList.toggle('show', !ok);
+    if (!ok){ const first=document.querySelector('.f.invalid'); if(first) first.scrollIntoView({behavior:'smooth',block:'center'}); }
+    return ok;
+  }
+
+  /* ---------- データ組み立て ---------- */
+  function build(){
+    const same = $('conNameBox').classList.contains('hidden');
+    const corp = radio('kubun')==='法人';
+    const conKanji = same ? val('appSei')+'　'+val('appMei') : val('conSei')+'　'+val('conMei');
+    const conKana  = same ? val('appSeiK')+'　'+val('appMeiK') : val('conSeiK')+'　'+val('conMeiK');
+    const tenTen = radio('cur')==='光コラボ 他社転用' || radio('cur')==='光コラボ 事業者変更';
+    let hinmoku = radio('cur');
+    if (hinmoku==='自社') hinmoku = radio('niftyCur');
+    if (hinmoku==='不明') hinmoku = '（要確認：お客さま回答「わからない」）';
+    const isMansion = /^集合/.test(radio('house'));
+    const tenG = radio('speed')==='10G';
+    const lineType = tenG ? (isMansion?'10Gマンションタイプ':'10Gファミリータイプ') : (isMansion?'1GB マンションタイプ':'1GB ファミリータイプ');
+    const term = val('term'), disc = val('disc');
+    const kaisen = `@nifty光コラボレーション${term}年更新（月額割引${disc}）`;
+    const opts = [];
+    if (radio('wifi')==='希望する'){
+      let w = val('wifiType');
+      if (w==='auto') w = tenG ? '10ギガ対応無線LANルータレンタル' : (areaOf(val('addr1'))==='東' ? '無線LANカードレンタル330円*東日本' : areaOf(val('addr1'))==='西' ? '無線LANカードレンタル110円*西日本' : '無線LANレンタル（東西要確認）');
+      opts.push(w);
+    }
+    opts.push(...checks('nOpt'));
+    const ht = radio('hikariTel');
+    const tv = radio('tv')==='あり';
+    const sv = radio('sv')==='有';
+    const svLines = sv ? [1,2,3,4].map(i=>[val('svTel'+i),val('svName'+i)]).filter(x=>x[0]||x[1]).map(x=>x[0]+'　'+x[1]) : [];
+    const callD = val('callDate') ? val('callDate').slice(5).replace('-','/') : '';
+    const callT = val('callTime')==='指定時間あり' ? '指定時間あり⇒'+val('callTimeDetail') : val('callTime');
+    const housing = /持家|分譲/.test(radio('house')) ? '所有' : '賃貸';
+
+    // 記事欄1（登録フォームのテンプレート準拠）
+    const k = [];
+    k.push('＜後確希望日＞' + (callD ? '指定日あり'+callD : '最短'));
+    k.push('＜後確希望時間＞' + callT);
+    k.push('');
+    k.push('＜取次記事＞');
+    k.push('月額割引：' + (disc==='あり'?'有り':'無し'));
+    k.push(term+'年更新');
+    k.push('住居形態：' + housing);
+    k.push('スマートバリュー：' + (sv?'有':'無'));
+    if (sv) svLines.forEach(l => k.push('⇒'+l));
+    k.push('支払い方法：' + (radio('pay')==='口座' ? '口座（＋200円）' : 'クレカ'));
+    if (corp){
+      k.push('');
+      k.push('＜法人契約の場合＞');
+      k.push('メールアドレス：' + val('corpMail'));
+      k.push('会社のホームページURL：' + val('corpUrl'));
+    }
+    if (tv){ k.push(''); k.push('＜フレッツテレビ有の場合＞'); k.push('フレッツテレビ：' + $('tvNum').selectedOptions[0].text); }
+    if (radio('cur')==='自社'){ k.push(''); k.push('＜自社転/自社新規＞'); k.push('ニフティID：' + toHalf(val('niftyId'))); }
+    if (tenTen && ht!=='なし' && val('hikariNum')){ k.push(''); k.push('＜転用時ひかり電話有の場合＞'); k.push('ひかり電話番号：' + val('hikariNum')); }
+    if (tenTen && val('curName')){ k.push(''); k.push(radio('cur')==='光コラボ 事業者変更' ? '≪事業者変更≫' : '＜転用時 回線名義＞'); k.push('現在利用中の回線の名義：' + val('curName')); }
+    if (radio('cur')==='光コラボ 事業者変更' && val('caf')) k.push('CAF番号：' + val('caf'));
+    if (!tenTen && radio('cur')!=='自社' && ht==='ひかり電話 基本プラン' && radio('mnp')==='現在ご利用中' && val('hikariNum')) k.push('ひかり電話番号：' + val('hikariNum'));
+    if (val('cb')){ k.push(''); k.push('＜キャンペーン・特典＞'); k.push(val('cb')); }
+    if (val('memo')){ k.push(''); k.push('＜お客さまご要望＞'); k.push(val('memo')); }
+    if (radio('cur')==='不明') { k.push(''); k.push('※現在の回線：お客さま不明のため要確認'); }
+
+    const relMap = {'本人':'本人','家族':'家族','その他':'その他'};
+    const staff = [
+      ['sec','取次情報'],
+      ['サイト運営会社','パートナー'],
+      ['パートナーID', val('pid')],
+      ['パートナー様　名称', val('pname')],
+      ['パートナー様 担当氏名', val('staffName')],
+      ['パートナー様　連絡先', val('ptel')],
+      ['販売取次手法', val('method')],
+      ['お申込日', today()],
+      ['sec','設置場所'],
+      ['設置場所郵便番号', val('zip')],
+      ['設置場所住所１', halfToFull(val('addr1'))],
+      ['設置場所住所２', halfToFull(val('addr2'))],
+      ['住宅区分', radio('house')],
+      ['sec','お申込者・ご契約者'],
+      ['お申込者名（漢字）', val('appSei')+'　'+val('appMei')],
+      ['お申込者名カナ', val('appSeiK')+'　'+val('appMeiK')],
+      ['ご契約者名（漢字)', conKanji],
+      ['ご契約者名カナ', conKana],
+      ['性別', radio('gender')],
+      ['ご契約者同非（申込者）', relMap[radio('rel')]],
+      ['ご契約者との関係（詳細）', radio('rel')==='本人' ? '' : val('relDetail')],
+      ['ご契約者生年月日', ymd(val('birth'))],
+      ['連絡先区分２', val('tel2') ? val('tel2k') : ''],
+      ['ご契約者区分', radio('kubun')],
+      ['連絡先電話番号(第1希望)', val('tel1')],
+      ['連絡先区分１', val('tel1k')],
+      ['連絡先電話番号(第2希望)', val('tel2')],
+      ['設置場所電話番号', val('siteTel')],
+      ['sec','回線・サービス'],
+      ['回線', kaisen],
+      ['光コラボ 回線タイプ', lineType],
+      ['品目/プラン', hinmoku],
+      ['転用番号', tenTen ? val('tenyo') : ''],
+      ['回線 オプション', opts.join('\n')],
+      ['番号ポータビリティ希望有無', ht==='なし' ? '' : radio('mnp')],
+      ['ひかり電話', ht],
+      ['ひかり電話 オプション', ht==='なし' ? '' : checks('telOpt').join('\n')],
+      ['映像系サービス', tv ? 'フレッツテレビ' : ''],
+      ['sec','記事欄'],
+      ['記事欄1', k.join('\n')],
+      ['入居日', radio('moved')==='予定' ? ymd(val('moveIn')) : ''],
+      ['記事欄2', val('mailTo')],
+      ['キャッシュバック特典', '特典なし'],
+    ];
+
+    const cust = [
+      ['sec','お申込者さま'],
+      ['お名前', val('appSei')+'　'+val('appMei')+'（'+val('appSeiK')+'　'+val('appMeiK')+'）'],
+      ['ご契約者さまとの関係', radio('rel')==='本人' ? 'ご本人' : radio('rel')+'（'+val('relDetail')+'）'],
+      ['sec','ご契約者さま'],
+      ['ご契約区分', radio('kubun')],
+      ['お名前', conKanji+'（'+conKana+'）'],
+      ['性別', radio('gender')],
+      ['生年月日', val('birth').replace(/-/g,'/')],
+      ...(corp ? [['会社メール', val('corpMail')],['会社HP', val('corpUrl')]] : []),
+      ['sec','ご連絡先'],
+      ['電話番号', val('tel1')+'（'+val('tel1k').replace('契約者','')+'）'],
+      ['その他の電話番号', val('tel2') ? val('tel2')+'（'+val('tel2k').replace('契約者','')+'）' : ''],
+      ['確認のお電話', (callD||'最短')+' / '+$('callTime').selectedOptions[0].text+(val('callTimeDetail')&&val('callTime')==='指定時間あり'?'（'+val('callTimeDetail')+'）':'')],
+      ['sec','設置場所'],
+      ['住所', '〒'+val('zip')+'\n'+val('addr1')+(val('addr2')?'\n'+val('addr2'):'')],
+      ['お住まい', radio('house')],
+      ['ご入居', radio('moved')==='予定' ? '入居予定：'+val('moveIn').replace(/-/g,'/') : '入居済み'],
+      ['設置場所の電話', val('siteTel')],
+      ['郵送物の送付先', val('mailTo')],
+      ['sec','回線・サービス'],
+      ['現在の回線', document.querySelector('input[name=cur]:checked').parentNode.textContent.trim()],
+      ...(tenTen ? [['承諾番号', val('tenyo')],['現在の回線名義', val('curName')]] : []),
+      ...(radio('cur')==='自社' ? [['@nifty ID', val('niftyId')]] : []),
+      ['通信速度', tenG ? '最大10ギガ' : '最大1ギガ'],
+      ['Wi-Fi機器レンタル', radio('wifi')],
+      ['ひかり電話', ht==='なし' ? '利用しない' : '利用する（'+document.querySelector('input[name=mnp]:checked').parentNode.textContent.trim()+'）'+(checks('telOpt').length?'\nオプション：'+checks('telOpt').join('、'):'')+(val('hikariNum')&&!$('hikariNumBox').classList.contains('hidden')?'\n番号：'+val('hikariNum'):'')],
+      ['フレッツ・テレビ', tv ? '利用する（'+$('tvNum').selectedOptions[0].text+'）' : '利用しない'],
+      ['au・UQのセット割', sv ? '使っている\n'+svLines.join('\n') : '使っていない'],
+      ['お支払い方法', radio('pay')==='口座' ? '口座振替（＋200円）' : 'クレジットカード'],
+      ['ご質問・ご要望', val('memo')],
+    ];
+    return {staff, cust, name: val('appSei')+val('appMei')};
+  }
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function renderTable(el, rows, copyable){
+    el.innerHTML = rows.map(([k,v]) => {
+      if (k==='sec') return `<tr class="sec"><th colspan="2">${esc(v)}</th></tr>`;
+      const empty = !v;
+      const btn = copyable && !empty ? `<button type="button" class="copy" data-v="${esc(v)}">コピー</button>` : '';
+      return `<tr><th>${esc(k)}</th><td class="${empty?'empty':''}">${btn}${empty?'—':esc(v)}</td></tr>`;
+    }).join('');
+  }
+  const asText = rows => rows.map(([k,v]) => k==='sec' ? '\n■'+v : '【'+k+'】'+(v.includes('\n')?'\n'+v:v)).join('\n').trim();
+
+  let data = null;
+  function step(n){
+    show($('form'), n===1); show($('confirm'), n===2); show($('done'), n===3);
+    [1,2,3].forEach(i => $('st'+i).classList.toggle('on', i===n));
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  $('form').addEventListener('submit', e => {
+    e.preventDefault();
+    refresh();
+    if (!validate()) return;
+    data = build();
+    renderTable($('custTable'), data.cust, false);
+    step(2);
+  });
+  $('backBtn').addEventListener('click', () => step(1));
+  $('sendBtn').addEventListener('click', () => {
+    renderTable($('staffTable'), data.staff, true);
+    $('lineBtn').href = 'https://line.me/R/share?text=' + encodeURIComponent(sendText());
+    step(3);
+  });
+  $('newBtn').addEventListener('click', () => {
+    const nb=$('newBtn');
+    if (!nb.dataset.arm){ nb.dataset.arm='1'; nb.textContent='もう一度押すと入力内容を消去します'; setTimeout(()=>{delete nb.dataset.arm; nb.textContent='新しいお客さまを入力';},4000); return; }
+    delete nb.dataset.arm; nb.textContent='新しいお客さまを入力';
+    const keep = ['pid','pname','staffName','ptel','method','term','disc','wifiType','toMail','cb'].map(id => [id,$(id).value]);
+    $('form').reset(); keep.forEach(([id,v]) => $(id).value = v);
+    data = null; refresh(); step(1);
+  });
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('.copy'); if (!b) return;
+    copy(b.dataset.v).then(() => { b.textContent='済'; b.classList.add('done'); });
+  });
+
+  const sendText = () => '光回線お申込み情報（' + data.name + ' 様）\n\n' + asText(data.staff);
+  $('copyAllBtn').addEventListener('click', () => copy(sendText()).then(()=>toast('コピーしました')));
+  $('mailBtn').addEventListener('click', () => {
+    location.href = 'mailto:' + encodeURIComponent(val('toMail')) + '?subject=' + encodeURIComponent('光回線お申込み情報（'+data.name+' 様）') + '&body=' + encodeURIComponent(sendText());
+  });
+
+  function copy(text){
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+    const ta = document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(_){} ta.remove();
+    return Promise.resolve();
+  }
+  let tt; function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('show'),2200); }
+
+  // 入力途中の離脱防止
+  window.addEventListener('beforeunload', e => { if (!$('form').classList.contains('hidden') && val('appSei')) { e.preventDefault(); e.returnValue=''; } });
+
+  refresh();
+})();
+</script>
+</body>
+</html>
